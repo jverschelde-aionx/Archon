@@ -65,7 +65,18 @@ services:
       timeout: 10s
       retries: 3
       start_period: 40s
-
+    restart: unless-stopped
+    labels:
+      - traefik.enable=true
+      - traefik.http.middlewares.gzip.compress=true
+      - traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https
+      - traefik.http.routers.archon-server.entryPoints=http
+      - traefik.http.routers.archon-server.middlewares=redirect-to-https
+      - traefik.http.routers.archon-server.entryPoints=https
+      - traefik.http.routers.archon-server.middlewares=gzip
+      - 'traefik.http.routers.archon-server.rule=Host(`archon-server.aionx.be`) && PathPrefix(`/`)'
+      - traefik.http.routers.archon-server.tls.certresolver=letsencrypt
+      - traefik.http.routers.archon-server.tls=true
   # Lightweight MCP Server Service (HTTP-based)
   archon-mcp:
     build:
@@ -116,6 +127,18 @@ services:
       timeout: 10s
       retries: 3
       start_period: 60s # Give dependencies time to start
+    restart: unless-stopped
+    labels:
+      - traefik.enable=true
+      - traefik.http.middlewares.gzip.compress=true
+      - traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https
+      - traefik.http.routers.archon-mcp.entryPoints=http
+      - traefik.http.routers.archon-mcp.middlewares=redirect-to-https
+      - 'traefik.http.routers.archon-mcp.rule=Host(`archon-mcp.aionx.be`) && PathPrefix(`/`)'
+      - traefik.http.routers.archon-mcp.entryPoints=https
+      - traefik.http.routers.archon-mcp.middlewares=gzip
+      - traefik.http.routers.archon-mcp.tls.certresolver=letsencrypt
+      - traefik.http.routers.archon-mcp.tls=true
 
   # AI Agents Service (ML/Reranking)
   archon-agents:
@@ -158,6 +181,18 @@ services:
       timeout: 10s
       retries: 3
       start_period: 40s
+    restart: unless-stopped
+    labels:
+      - traefik.enable=true
+      - traefik.http.middlewares.gzip.compress=true
+      - traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https
+      - traefik.http.routers.archon-agents.entryPoints=http
+      - traefik.http.routers.archon-agents.middlewares=redirect-to-https
+      - 'traefik.http.routers.archon-agents.rule=Host(`archon-agents.aionx.be`) && PathPrefix(`/`)'
+      - traefik.http.routers.archon-agents.entryPoints=https
+      - traefik.http.routers.archon-agents.middlewares=gzip
+      - traefik.http.routers.archon-agents.tls.certresolver=letsencrypt
+      - traefik.http.routers.archon-agents.tls=true
 
   # Frontend
   archon-frontend:
@@ -182,6 +217,18 @@ services:
       interval: 30s
       timeout: 10s
       retries: 3
+    restart: unless-stopped
+    labels:
+      - traefik.enable=true
+      - traefik.http.middlewares.gzip.compress=true
+      - traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https
+      - traefik.http.routers.archon-frontend.entryPoints=http
+      - traefik.http.routers.archon-frontend.middlewares=redirect-to-https
+      - 'traefik.http.routers.archon-frontend.rule=Host(`archon.aionx.be`) && PathPrefix(`/`)'
+      - traefik.http.routers.archon-frontend.entryPoints=https
+      - traefik.http.routers.archon-frontend.middlewares=gzip
+      - traefik.http.routers.archon-frontend.tls.certresolver=letsencrypt
+      - traefik.http.routers.archon-frontend.tls=true
     depends_on:
       archon-server:
         condition: service_healthy
@@ -189,3 +236,5 @@ services:
 networks:
   app-network:
     driver: bridge
+  traefik_proxy:
+    external: true
