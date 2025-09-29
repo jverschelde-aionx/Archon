@@ -18,8 +18,7 @@ services:
     ports:
       - "${ARCHON_SERVER_PORT:-8181}:${ARCHON_SERVER_PORT:-8181}"
     environment:
-      - SERVICE_DISCOVERY_MODE=env
-      - SERVICE_URL_ARCHON_MCP=http://archon-mcp:${ARCHON_MCP_PORT:-8051}
+      - SERVICE_DISCOVERY_MODE=docker_compose
       - SUPABASE_URL=${SUPABASE_URL}
       - SUPABASE_SERVICE_KEY=${SUPABASE_SERVICE_KEY}
       - OPENAI_API_KEY=${OPENAI_API_KEY:-}
