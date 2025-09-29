@@ -35,7 +35,7 @@ services:
       app-network:
         aliases:
           - archon-server
-      w0g8o4gwk0koowg4os88wws4:
+      traefik_proxy:
         aliases:
           - archon-server
     volumes:
@@ -106,7 +106,7 @@ services:
       app-network:
         aliases:
           - archon-mcp
-      w0g8o4gwk0koowg4os88wws4:
+      traefik_proxy:
         aliases:
           - archon-mcp
     depends_on:
@@ -166,7 +166,7 @@ services:
       app-network:
         aliases:
           - archon-agents
-      w0g8o4gwk0koowg4os88wws4:
+      traefik_proxy:
         aliases:
           - archon-agents
     healthcheck:
