@@ -18,7 +18,9 @@ services:
     ports:
       - "${ARCHON_SERVER_PORT:-8181}:${ARCHON_SERVER_PORT:-8181}"
     environment:
-      - SERVICE_DISCOVERY_MODE=docker_compose
+      - SERVICE_DISCOVERY_MODE=env      
+      - SERVICE_URL_ARCHON_MCP=http://archon-mcp:${ARCHON_MCP_PORT:-8051}
+      - SERVICE_URL_ARCHON_AGENTS=http://archon-agents:${ARCHON_AGENTS_PORT:-8052}
       - SUPABASE_URL=${SUPABASE_URL}
       - SUPABASE_SERVICE_KEY=${SUPABASE_SERVICE_KEY}
       - OPENAI_API_KEY=${OPENAI_API_KEY:-}
@@ -30,7 +32,12 @@ services:
       - AGENTS_ENABLED=${AGENTS_ENABLED:-true}
       - ARCHON_HOST=${HOST:-localhost}
     networks:
-      - app-network
+      app-network:
+        aliases:
+          - archon-server
+      w0g8o4gwk0koowg4os88wws4:
+        aliases:
+          - archon-server
     volumes:
       - '/var/run/docker.sock:/var/run/docker.sock'
     extra_hosts:
@@ -85,7 +92,12 @@ services:
       - ARCHON_SERVER_PORT=${ARCHON_SERVER_PORT:-8181}
       - ARCHON_AGENTS_PORT=${ARCHON_AGENTS_PORT:-8052}
     networks:
-      - app-network
+      app-network:
+        aliases:
+          - archon-mcp
+      w0g8o4gwk0koowg4os88wws4:
+        aliases:
+          - archon-mcp
     depends_on:
       archon-server:
         condition: service_healthy
@@ -128,7 +140,12 @@ services:
       - ARCHON_AGENTS_PORT=${ARCHON_AGENTS_PORT:-8052}
       - ARCHON_SERVER_PORT=${ARCHON_SERVER_PORT:-8181}
     networks:
-      - app-network
+      app-network:
+        aliases:
+          - archon-agents
+      w0g8o4gwk0koowg4os88wws4:
+        aliases:
+          - archon-agents
     healthcheck:
       test:
         [
